@@ -1,5 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { Student } from './student.entity'; // ajuste o caminho conforme necessário
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class PaymentList {
@@ -15,6 +14,6 @@ export class PaymentList {
   @Column('decimal')
   amount: number;
 
-  @OneToMany(() => Student, (student) => student.paymentList, { cascade: true })
-  students: Student[];
+  @Column('text', { array: true })
+  students: string[];
 }
