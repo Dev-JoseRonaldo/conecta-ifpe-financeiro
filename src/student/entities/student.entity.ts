@@ -1,5 +1,5 @@
+import { PaymentList } from 'src/payment-list/entities/payment-list.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { PaymentList } from './payment-list.entity'; // ajuste o caminho conforme necessário
 
 @Entity()
 export class Student {
