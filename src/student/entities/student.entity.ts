@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { PaymentList } from 'src/payment-list/entities/payment-list.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { PaymentStatement } from 'src/payment-statement/entities/payment-statement.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  ManyToMany,
+} from 'typeorm';
 
 @Entity()
 export class Student {
@@ -27,4 +34,10 @@ export class Student {
   @ApiProperty()
   @ManyToOne(() => PaymentList, (paymentList) => paymentList.students)
   paymentList: PaymentList;
+
+  @ManyToMany(
+    () => PaymentStatement,
+    (paymentStatement) => paymentStatement.students,
+  )
+  paymentStatements: PaymentStatement[];
 }

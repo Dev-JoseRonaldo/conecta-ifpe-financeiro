@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PaymentListModule } from './payment-list/payment-list.module';
 import { StudentService } from './student/student.service';
 import { StudentModule } from './student/student.module';
+import { PaymentStatementModule } from './payment-statement/payment-statement.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { StudentModule } from './student/student.module';
     }),
     PaymentListModule,
     StudentModule,
+    PaymentStatementModule,
   ],
   providers: [StudentService],
 })
