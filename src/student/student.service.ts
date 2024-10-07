@@ -1,39 +1,53 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Student } from './entities/student.entity';
+import { Student } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class StudentService {
-  constructor(
-    @InjectRepository(Student)
-    private readonly studentRepository: Repository<Student>,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async create(studentData: Student): Promise<Student> {
-    const student = this.studentRepository.create(studentData);
-    return await this.studentRepository.save(student);
+    return await this.prisma.student.create({
+      data: studentData,
+    });
   }
 
-  async createMany(studentsData: Partial<Student>[]): Promise<Student[]> {
-    const students = this.studentRepository.create(studentsData);
-    return await this.studentRepository.save(students);
+  async createMany(studentsData: Student[]): Promise<Student[]> {
+    await this.prisma.student.createMany({
+      data: studentsData,
+    });
+
+    const createdStudents = await this.prisma.student.findMany({
+      where: {
+        cpf: {
+          in: studentsData.map((student) => student.cpf),
+        },
+      },
+    });
+
+    return createdStudents;
   }
 
   async findAll(): Promise<Student[]> {
-    return await this.studentRepository.find();
+    return await this.prisma.student.findMany();
   }
 
   async findOne(id: number): Promise<Student> {
-    return await this.studentRepository.findOneBy({ id });
+    return await this.prisma.student.findUnique({
+      where: { id },
+    });
   }
 
   async update(id: number, studentData: Partial<Student>): Promise<Student> {
-    await this.studentRepository.update(id, studentData);
-    return this.findOne(id);
+    return await this.prisma.student.update({
+      where: { id },
+      data: studentData,
+    });
   }
 
   async remove(id: number): Promise<void> {
-    await this.studentRepository.delete(id);
+    await this.prisma.student.delete({
+      where: { id },
+    });
   }
 }
