@@ -1,21 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { PaymentList } from './entities/payment-list.entity';
+import { PaymentList } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class PaymentListService {
-  constructor(
-    @InjectRepository(PaymentList)
-    private readonly paymentListRepository: Repository<PaymentList>,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
-  async create(paymentListData: Partial<PaymentList>): Promise<PaymentList> {
-    const paymentList = this.paymentListRepository.create(paymentListData);
-    return await this.paymentListRepository.save(paymentList);
+  async create(paymentListData: PaymentList): Promise<PaymentList> {
+    return await this.prisma.paymentList.create({
+      data: paymentListData,
+    });
   }
 
-  async findAllWithStudents(): Promise<PaymentList[]> {
-    return await this.paymentListRepository.find({ relations: ['students'] });
+  async findAllWithStudents(): Promise<any[]> {
+    const paymentLists = await this.prisma.paymentList.findMany({
+      include: {
+        students: true,
+      },
+    });
+    return paymentLists;
   }
 }
