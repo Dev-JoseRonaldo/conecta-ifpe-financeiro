@@ -7,9 +7,10 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { Student } from './entities/student.entity';
+
 import { StudentService } from './student.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Student } from '@prisma/client';
 
 @ApiTags('students')
 @Controller('students')
@@ -28,9 +29,7 @@ export class StudentController {
   @ApiOperation({ summary: 'Adicionar múltiplos alunos' })
   @ApiResponse({ status: 201, description: 'Alunos criados com sucesso.' })
   @ApiResponse({ status: 400, description: 'Dados inválidos.' })
-  async createMany(
-    @Body() studentsData: Partial<Student>[],
-  ): Promise<Student[]> {
+  async createMany(@Body() studentsData: Student[]): Promise<Student[]> {
     return await this.studentService.createMany(studentsData);
   }
 
@@ -39,7 +38,6 @@ export class StudentController {
   @ApiResponse({
     status: 200,
     description: 'Lista de alunos retornada com sucesso.',
-    type: [Student],
   })
   async findAll(): Promise<Student[]> {
     return this.studentService.findAll();
@@ -50,7 +48,6 @@ export class StudentController {
   @ApiResponse({
     status: 200,
     description: 'Aluno encontrado com sucesso.',
-    type: Student,
   })
   @ApiResponse({ status: 404, description: 'Aluno não encontrado.' })
   async findOne(@Param('id') id: number): Promise<Student> {
@@ -62,7 +59,6 @@ export class StudentController {
   @ApiResponse({
     status: 200,
     description: 'Aluno atualizado com sucesso.',
-    type: Student,
   })
   @ApiResponse({ status: 404, description: 'Aluno não encontrado.' })
   @ApiResponse({ status: 400, description: 'Dados inválidos.' })

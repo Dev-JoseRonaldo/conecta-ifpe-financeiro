@@ -1,7 +1,8 @@
 import { Controller, Get, Post, Body } from '@nestjs/common';
-import { PaymentList } from './entities/payment-list.entity';
+
 import { PaymentListService } from './payment-list.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { PaymentList } from '@prisma/client';
 
 @ApiTags('payment-list') // Agrupando rotas de Payment List
 @Controller('payment-list')
@@ -18,7 +19,7 @@ export class PaymentListController {
     status: 400,
     description: 'Dados inválidos fornecidos.',
   })
-  async create(@Body() paymentListData: Partial<PaymentList>) {
+  async create(@Body() paymentListData: PaymentList) {
     return await this.paymentListService.create(paymentListData);
   }
 
@@ -27,7 +28,6 @@ export class PaymentListController {
   @ApiResponse({
     status: 200,
     description: 'Listas de pagamento retornadas com sucesso.',
-    type: [PaymentList],
   })
   @ApiResponse({
     status: 404,
